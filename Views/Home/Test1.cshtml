@@ -1,0 +1,326 @@
+﻿
+@{
+   // ViewData["Title"] = "TEST1";
+
+}
+
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wongnok Recipes - แหล่งรวมสูตรอาหารออนไลน์</title>
+    <link rel="stylesheet" href="~/css/Style.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Prompt', 'Kanit', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <!-- ส่วนหัว -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <img src="/api/placeholder/40/40" alt="Wongnok Logo" />
+                <span>Wongnok Recipes</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#">หน้าแรก</a></li>
+                    <li><a href="#">สูตรทั้งหมด</a></li>
+                    <li><a href="#">หมวดหมู่</a></li>
+                    <li><a href="#">เกี่ยวกับเรา</a></li>
+                </ul>
+            </nav>
+            <div class="user-actions">
+                <button id="login-button">เข้าสู่ระบบ</button>
+                <button id="register-button">สมัครสมาชิก</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ฮีโร่เซคชั่น -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>ค้นพบสูตรอาหารที่ใช่สำหรับคุณ</h1>
+            <p>เว็บไซต์รวบรวมสูตรอาหารมากมายที่คุณสามารถค้นหาได้ตามความต้องการ ไม่ว่าจะเป็นเมนูง่ายๆ ทำเร็ว หรือเมนูพิเศษสำหรับโอกาสพิเศษ</p>
+        </div>
+    </section>
+
+    <!-- ส่วนค้นหา -->
+    <div class="container">
+        <div class="search-section">
+            <div class="search-tabs">
+                <div class="tab active" data-tab="menu-search">ค้นหาจากชื่อเมนู</div>
+                <div class="tab" data-tab="ingredient-search">ค้นหาจากวัตถุดิบ</div>
+                <div class="tab" data-tab="filter-search">ค้นหาจากเงื่อนไข</div>
+            </div>
+
+            <div class="search-content active" id="menu-search">
+                <form class="search-form">
+                    <input type="text" placeholder="ใส่ชื่อเมนูที่ต้องการค้นหา เช่น ต้มยำกุ้ง, ผัดไทย...">
+                    <button type="submit">ค้นหา</button>
+                </form>
+            </div>
+
+            <div class="search-content" id="ingredient-search">
+                <form class="search-form">
+                    <input type="text" placeholder="ใส่วัตถุดิบที่มี เช่น กุ้ง, หมูสับ...">
+                    <button type="submit">ค้นหา</button>
+                </form>
+            </div>
+
+            <div class="search-content" id="filter-search">
+                <form class="search-form">
+                    <select name="cooking-time">
+                        <option value="">-- เวลาที่ใช้ทำอาหาร --</option>
+                        <option value="5-10">5 - 10 นาที</option>
+                        <option value="11-30">11 - 30 นาที</option>
+                        <option value="31-60">31 - 60 นาที</option>
+                        <option value="60+">มากกว่า 60 นาที</option>
+                    </select>
+                    <select name="difficulty">
+                        <option value="">-- ระดับความยาก --</option>
+                        <option value="easy">ง่าย (Easy)</option>
+                        <option value="medium">ปานกลาง (Medium)</option>
+                        <option value="hard">ยาก (Hard)</option>
+                    </select>
+                    <button type="submit">ค้นหา</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ส่วนของสูตรอาหารแนะนำ -->
+    <section class="recipes-section">
+        <div class="container">
+            <h2 class="section-title">สูตรอาหารแนะนำ</h2>
+            <div class="recipes-grid">
+                <!-- สูตรที่ 1 -->
+                <div class="recipe-card">
+                    <div class="recipe-image" style="background-image: url('/api/placeholder/300/200');"></div>
+                    <div class="recipe-content">
+                        <h3 class="recipe-title">ต้มยำกุ้งน้ำข้น</h3>
+                        <div class="recipe-info">
+                            <div class="recipe-rating">
+                                <div class="stars">★★★★★</div>
+                                <span>5.0</span>
+                            </div>
+                            <div class="recipe-difficulty">
+                                <span>ปานกลาง</span>
+                            </div>
+                            <div class="recipe-time">
+                                <span>30 นาที</span>
+                            </div>
+                        </div>
+                        <p class="recipe-creator">โดย: Chef Somsak</p>
+                    </div>
+                </div>
+
+                <!-- สูตรที่ 2 -->
+                <div class="recipe-card">
+                    <div class="recipe-image" style="background-image: url('/api/placeholder/300/200');"></div>
+                    <div class="recipe-content">
+                        <h3 class="recipe-title">ผัดไทยกุ้งสด</h3>
+                        <div class="recipe-info">
+                            <div class="recipe-rating">
+                                <div class="stars">★★★★☆</div>
+                                <span>4.7</span>
+                            </div>
+                            <div class="recipe-difficulty">
+                                <span>ง่าย</span>
+                            </div>
+                            <div class="recipe-time">
+                                <span>20 นาที</span>
+                            </div>
+                        </div>
+                        <p class="recipe-creator">โดย: Chef Nattapon</p>
+                    </div>
+                </div>
+
+                <!-- สูตรที่ 3 -->
+                <div class="recipe-card">
+                    <div class="recipe-image" style="background-image: url('/api/placeholder/300/200');"></div>
+                    <div class="recipe-content">
+                        <h3 class="recipe-title">แกงเขียวหวานไก่</h3>
+                        <div class="recipe-info">
+                            <div class="recipe-rating">
+                                <div class="stars">★★★★☆</div>
+                                <span>4.8</span>
+                            </div>
+                            <div class="recipe-difficulty">
+                                <span>ปานกลาง</span>
+                            </div>
+                            <div class="recipe-time">
+                                <span>45 นาที</span>
+                            </div>
+                        </div>
+                        <p class="recipe-creator">โดย: Chef Ratree</p>
+                    </div>
+                </div>
+
+                <!-- สูตรที่ 4 -->
+                <div class="recipe-card">
+                    <div class="recipe-image" style="background-image: url('/api/placeholder/300/200');"></div>
+                    <div class="recipe-content">
+                        <h3 class="recipe-title">ข้าวผัดปู</h3>
+                        <div class="recipe-info">
+                            <div class="recipe-rating">
+                                <div class="stars">★★★★☆</div>
+                                <span>4.5</span>
+                            </div>
+                            <div class="recipe-difficulty">
+                                <span>ง่าย</span>
+                            </div>
+                            <div class="recipe-time">
+                                <span>15 นาที</span>
+                            </div>
+                        </div>
+                        <p class="recipe-creator">โดย: Chef Kannika</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ส่วนเมนูตามหมวดหมู่ -->
+    <section class="categories-section">
+        <div class="container">
+            <h2 class="section-title">หมวดหมู่อาหาร</h2>
+            <div class="categories-grid">
+                <div class="category-card">
+                    <img src="/api/placeholder/300/200" alt="อาหารไทย" class="category-image">
+                    <div class="category-overlay">อาหารไทย</div>
+                </div>
+                <div class="category-card">
+                    <img src="/api/placeholder/300/200" alt="อาหารอีสาน" class="category-image">
+                    <div class="category-overlay">อาหารอีสาน</div>
+                </div>
+                <div class="category-card">
+                    <img src="/api/placeholder/300/200" alt="อาหารเหนือ" class="category-image">
+                    <div class="category-overlay">อาหารเหนือ</div>
+                </div>
+                <div class="category-card">
+                    <img src="/api/placeholder/300/200" alt="อาหารใต้" class="category-image">
+                    <div class="category-overlay">อาหารใต้</div>
+                </div>
+                <div class="category-card">
+                    <img src="/api/placeholder/300/200" alt="อาหารนานาชาติ" class="category-image">
+                    <div class="category-overlay">อาหารนานาชาติ</div>
+                </div>
+                <div class="category-card">
+                    <img src="/api/placeholder/300/200" alt="ขนมหวาน" class="category-image">
+                    <div class="category-overlay">ขนมหวาน</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ส่วนของท้ายเว็บ -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Wongnok Recipes</h3>
+                    <p>แหล่งรวบรวมสูตรอาหารคุณภาพ ที่คุณสามารถค้นหาและแบ่งปันได้อย่างง่ายดาย สร้างสรรค์อาหารอร่อยในแบบของคุณ</p>
+                </div>
+                <div class="footer-column">
+                    <h3>ลิงก์ด่วน</h3>
+                    <ul>
+                        <li><a href="#">หน้าแรก</a></li>
+                        <li><a href="#">สูตรทั้งหมด</a></li>
+                        <li><a href="#">หมวดหมู่</a></li>
+                        <li><a href="#">เกี่ยวกับเรา</a></li>
+                        <li><a href="#">นโยบายความเป็นส่วนตัว</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>สมัครสมาชิก</h3>
+                    <p>รับข่าวสารและสูตรอาหารใหม่ๆ จากเรา</p>
+                    <form>
+                        <input type="email" placeholder="อีเมลของคุณ" style="width: 100%; padding: 10px; margin-top: 10px; border-radius: 5px; border: none;">
+                        <button type="submit" style="width: 100%; padding: 10px; margin-top: 10px; background-color: #ff6b35; color: white; border: none; border-radius: 5px; cursor: pointer;">สมัครรับข่าวสาร</button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Wongnok Recipes. สงวนลิขสิทธิ์</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal Login -->
+    <div class="modal" id="login-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>เข้าสู่ระบบ</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-email">อีเมล</label>
+                    <input type="email" id="login-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">รหัสผ่าน</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <button type="submit" class="form-button">เข้าสู่ระบบ</button>
+            </form>
+            <div class="switch-form">
+                <p>ยังไม่มีบัญชี? <a href="#" id="switch-to-register">สมัครสมาชิก</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Register -->
+    <div class="modal" id="register-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>สมัครสมาชิก</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="register-name">ชื่อผู้ใช้</label>
+                    <input type="text" id="register-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-email">อีเมล</label>
+                    <input type="email" id="register-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-password">รหัสผ่าน</label>
+                    <input type="password" id="register-password" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-confirm-password">ยืนยันรหัสผ่าน</label>
+                    <input type="password" id="register-confirm-password" required>
+                </div>
+                <button type="submit" class="form-button">สมัครสมาชิก</button>
+            </form>
+            <div class="switch-form">
+                <p>มีบัญชีอยู่แล้ว? <a href="#" id="switch-to-login">เข้าสู่ระบบ</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+    <script>
+        // สำหรับการควบคุมแท็บค้นหา
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // ลบคลาส active จากทุกแท็บ
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                // ลบคลาส active จากทุกเนื้อหา
+                document.querySelectorAll('.search-content').forEach(c => c.classList.remove('active'));
+
+                // เพิ่มคลาส active ให้กับแท็บที่คลิก
+                tab.classList.add('active');
+                    // เพิ่มคลาส active ให้กับเนื้อหาที่เกี่ยวข
+    </script>
+</html>

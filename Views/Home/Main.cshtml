@@ -1,0 +1,700 @@
+﻿
+@{
+    @model wongnok_dev.Models.MainModel;
+
+
+    //ViewData["Message"];
+}
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wongnok - สูตรอาหารไทย</title>
+    <link rel="stylesheet" href="~/css/Style.css" />
+    <link rel="stylesheet" href="~/css/bootstrap/bootstrap.min.css" />
+    <script src="~/js/bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fff8f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #ff6f61;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .hdst {
+            background-color: #ff6f61;
+            color: white;
+            text-align: center;
+        }
+
+        .search-container {
+            background-color: #ffe5d9;
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        input[type="text"], select {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #ffb74d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .recipes {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .recipe-card {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+            .recipe-card img {
+                margin-left : 25%;
+                text-align :center;
+                width: 50%;
+                height: 40%;
+                object-fit: cover;
+            }
+
+        .recipe-info {
+            padding: 15px;
+        }
+
+            .recipe-info h3 {
+                margin: 0 0 10px;
+            }
+
+            .recipe-info p {
+                margin: 5px 0;
+            }
+
+        btnPad{
+            padding-bottom:5px;
+        }
+    </style>
+</head>
+<body >
+
+
+
+
+    <div class="row hdst">
+        <div class="col-10">
+            <h1>Wongnok</h1>
+            <p>ค้นหาสูตรอาหารได้ง่าย ๆ ด้วยเมนู, วัตถุดิบ, เวลา หรือระดับความยาก</p>
+        </div>
+        <div class="col-2 mt-4" id="divInit">
+            <button class="" id="btnLogin" data-bs-toggle="modal" data-bs-target="#exampleModal"> login </button>
+            <button class="" id="btnRegister" data-bs-toggle="modal" data-bs-target="#exampleModalRegis"> signup </button>
+
+        </div>
+
+        <div class="col-2 mt-4" style="display:none" id="navMember">
+
+            <!-- Example single danger button -->
+            <div class="btn-group">
+                <button id="btnDroplist" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">หน้าแรก</a></li>
+                    <li><a class="dropdown-item" href="/Home/RecipeManage">เพิ่มสูตรอาหาร</a></li>
+                    <li><a class="dropdown-item" href="/Home/RecipeEdit">สูตรอาหารของฉัน</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" onclick="fnLogout();">Log out</a></li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+
+
+
+
+    <div class="search-container">
+        <input type="text" id="searchName" placeholder="ชื่อเมนู">
+
+        <input type="text" id="searchIngredient" placeholder="วัตถุดิบ">
+
+        <select id="searchTime">
+            <option value="">เลือกเวลาในการทำ</option>
+            <option value="5-10">5 - 10 นาที</option>
+            <option value="11-30">11 - 30 นาที</option>
+            <option value="31-60">31 - 60 นาที</option>
+            <option value="60+">60+ นาที</option>
+        </select>
+
+        <select id="searchDifficulty">
+            <option value="">เลือกระดับความยาก</option>
+            <option value="Easy">ง่าย</option>
+            <option value="Medium">ปานกลาง</option>
+            <option value="Hard">ยาก</option>
+        </select>
+
+        <button onclick="searchRecipes()">ค้นหา</button>
+    </div>
+
+    <div class="recipes" id="recipesContainer">
+        <!-- Recipe cards will be inserted here dynamically -->
+    </div>
+
+
+
+    <!-- Modal  login-->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">ลงชื่อเข้าใช้</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    @*<form asp-action="SubmitText" method="post" />*@
+
+
+                    <div class="mb-3 row">
+                        <label for="staticEmail" class="col-sm-2 col-form-label">Email</label>
+                        <div class="col-sm-10">
+                            <input type="email" class="form-control" id="inputEmail">
+
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="inputPassword" class="col-sm-2 col-form-label">Password</label>
+                        <div class="col-sm-10">
+                            <input type="password" class="form-control" id="inputPassword">
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                       
+                        <div class="col-sm-10">
+                           <label id="lblMsgLogin" style="color:red"></label>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" id="btnLoginClose" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+                        <button onclick="sendName()" class="btn btn-primary">ตกลง</button>
+                    </div>
+
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal register-->
+    <div class="modal fade" id="exampleModalRegis" tabindex="-1" aria-labelledby="exampleModalRegisLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalRegisLabel">สมัครสมาชิก</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    @*<form asp-action="SubmitRegis" enctype="multipart/form-data" method="post" >*@
+
+                    <div class="row mb-1">
+
+       
+
+                        <div class="col-12 mb-3">
+                            <label for="inpuName" class="form-label">ชื่อ</label>
+                            <input type="text" class="form-control" required id="inpuName">
+                        </div>
+
+
+                        <div class="col-12 mb-3">
+                            <label for="inpuLastName" class="form-label">นามสกุล</label>
+                            <input type="text" class="form-control" id="inpuLastName" required>
+                        </div>
+
+                        <div class="col-12 mb-3">
+                            <label for="inputEmailReg" class="form-label">อีเมลล์</label>
+                            <input type="email" class="form-control" id="inputEmailReg" required>
+                        </div>
+
+                        <div class="col-12 mb-3">
+                            <label for="inputPassReg" class="form-label">ตั้งรหัสผ่าน</label>
+                            <input type="password" class="form-control" id="inputPassReg" required>
+                        </div>
+                        <br />
+                        <label id="lblMag" style="color:red" class="form-label"></label>
+                        <br />
+                    </div>
+
+                    <div class="modal-footer">
+                        
+                        <button type="button" id="btnRegClose" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+                        <button type="button" onclick="Register();" class="btn btn-primary">ตกลง</button>
+                    </div>
+
+                  @*</form>*@
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+
+    <button class="" id="btnRating" data-bs-toggle="modal" data-bs-target="#exampleModalRating" style="display:none"> </button>
+    <!-- Modal rating-->
+    <div class="modal fade" id="exampleModalRating" tabindex="-1" aria-labelledby="exampleModalRating" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                 
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="rating-container">
+                        <h1 class="title">ให้คะแนนความพึงพอใจ</h1>
+
+
+                        <div id="divScore">
+
+                            1
+                            <input class="form-check-input" type="radio" value="1" name="Score1" />
+                            2
+                            <input class="form-check-input" type="radio" value="2" name="Score1" />
+                            3
+                            <input class="form-check-input" type="radio" value="3" name="Score1" />
+                            4
+                            <input class="form-check-input" type="radio" value="4" name="Score1" />
+                            5
+                            <input class="form-check-input" type="radio" value="5" name="Score1" />
+                            <br />
+                            <p id="hiddenMenuID" style="display: none;"></p>
+                            <button onclick="setRating();" class="submit-btn" id="submitBtn">ส่งคะแนน</button>
+
+                        </div>
+                        <div id="divComplete">
+
+                            <label id="lblMsg"></label> 
+                            <br />
+                            <br />
+                            <button class="submit-btn" onclick="window.location.reload();" data-bs-dismiss="modal">ตกลง</button>
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    @Html.AntiForgeryToken()
+
+    <script>
+
+        
+
+        const recipes = [];
+        window.onload = () => getAllRecipe();
+
+      
+
+        if (localStorage.getItem("UserID")!=null) {
+            console.log("User ID --------------->" + localStorage.getItem("UserID"))
+            console.log("User name --------------->" + localStorage.getItem("username"))
+
+
+            document.getElementById("btnDroplist").innerText = localStorage.getItem("username");
+
+            document.getElementById("divInit").style.display = "none";
+            document.getElementById("navMember").style.display = "block";
+
+        }
+
+        function getAllRecipe() {
+
+           
+            $.ajax({
+                url: '/Home/GetAllRecipe',
+                method: 'POST',
+                contentType: 'application/json',
+                data: "",
+                success: function (res) {
+
+              
+                    recipes.push(res); 
+
+
+                    displayRecipes(res);
+             
+               }
+                //success
+
+
+                
+
+            });
+
+        }
+
+
+        function searchRecipes() {
+            const nameQuery = document.getElementById("searchName").value.toLowerCase();
+            const ingredientQuery = document.getElementById("searchIngredient").value.toLowerCase();
+            const timeRange = document.getElementById("searchTime").value;
+            const difficulty = document.getElementById("searchDifficulty").value;
+
+            console.log("nameQuery  ----: " + nameQuery);
+            console.log("ingredientQuery  ----: " + ingredientQuery);
+            console.log("timeRange  ----: " + timeRange);
+            console.log("difficulty  ----: " + difficulty);
+
+  
+
+            const filtered = recipes[0].filter(recipe => {
+                
+                const matchTime = (() => {
+                    if (!timeRange) return true;
+                    if (timeRange === '5-10') return recipe.times == '5 - 10 นาที';
+                    if (timeRange === '11-30') return recipe.times == '11 - 30 นาที';
+                    if (timeRange === '31-60') return recipe.times == '31 - 60 นาที';
+                    if (timeRange === '60+') return recipe.times == '60+ นาที';
+                    return true;
+ 
+                })();
+                //console.log("matchTime  ----: " + matchTime);
+
+                const matchdifficulty = (() => {
+                    if (difficulty === recipe.levels) return true;
+                })();
+
+
+               // const matchName = (() => {
+                const matchName = recipe.menuName.toLowerCase().includes(nameQuery);
+                const matchIngredient = recipe.ingredient.toLowerCase().includes(ingredientQuery);
+
+                console.log("matchName -- " + matchName);
+
+                if (nameQuery == "" && ingredientQuery == "") {
+                    
+                    if (timeRange != "" && difficulty == "") {
+                        return matchTime;
+                    } else if (timeRange == "" && difficulty != "") {
+                        return matchdifficulty;
+                    } else if (timeRange != "" && difficulty != "") {
+                        return matchTime && matchdifficulty;
+                    }
+
+                }else if (nameQuery == "" && ingredientQuery != "") {
+                    return matchIngredient;
+                } else if (nameQuery != "" && ingredientQuery == "") {
+                    return matchName ;
+                } else if (nameQuery != "" && ingredientQuery != "") {
+                    return matchName && matchIngredient;
+                }
+
+
+          
+               
+            });
+
+            displayRecipes(filtered);
+
+       
+
+        }
+
+        function displayRecipes(recipesList) {
+
+
+            
+
+            const container = document.getElementById("recipesContainer");
+            container.innerHTML = "";
+
+            if (recipesList.length === 0) {
+                container.innerHTML = "<p>ไม่พบสูตรอาหารที่ตรงกัน</p>";
+                return;
+            }
+
+            //width: 50 %;
+            //height: 40 %;
+            console.log("recipesList --->" + JSON.stringify(recipesList));
+
+            recipesList.forEach(recipett => {
+                const card = document.createElement("div");
+                card.className = "recipe-card";
+
+                if (recipett.userOwner == localStorage.getItem("UserID") || localStorage.getItem("UserID") ==null) {
+                    card.innerHTML = `
+                                <img src="/uploads/${recipett.imageRecipePath}" alt="${recipett.menuName}  ">
+                                <div class="recipe-info">
+                                    <h3>${recipett.menuName}</h3>
+                                    <p><strong>วัตถุดิบ:</strong> ${recipett.ingredient}</p>
+                                    <p><strong>ระยะเวลา:</strong> ${recipett.times}</p></>
+                                    <p><strong>ระดับความยาก:</strong> ${recipett.levels}</p>
+                                    <p><strong>คะแนน:</strong> ${recipett.rating} </p>  
+                                    <p><strong>คนให้คะแนน:</strong> ${recipett.voter} </p>  
+                                    
+                                </div>
+                            `;
+                } else {
+
+                    card.innerHTML = `
+                                <img src="/uploads/${recipett.imageRecipePath}" alt="${recipett.menuName}   ">
+                                <div class="recipe-info">
+                                    <h3>${recipett.menuName}</h3>
+                                    <p><strong>วัตถุดิบ:</strong> ${recipett.ingredient}</p>
+                                    <p><strong>ระยะเวลา:</strong> ${recipett.times}</p></>
+                                    <p><strong>ระดับความยาก:</strong> ${recipett.levels}</p>
+                                     <p><strong>คะแนน:</strong> ${recipett.rating} </p>  
+                                    <p><strong>จำคนให้คะแนน:</strong> ${recipett.voter} </p>  
+                                        <button onclick="setScore('${recipett.recipeID}')">ให้คะแนน</button>
+                                       
+                                </div>
+                            `;
+
+                }
+
+                
+
+
+
+                container.appendChild(card);
+            });
+        
+        }
+
+        function getFormattedTime(minutes) {
+            if (minutes <= 10) return "5 - 10 นาที";
+            else if (minutes <= 30) return "11 - 30 นาที";
+            else if (minutes <= 60) return "31 - 60 นาที";
+            else return "60+ นาที";
+        }
+
+        // Initial load
+       
+
+
+        function Register() {
+
+           
+        //inpuUserName  inpuName inpuLastName inputEmailReg inputPassReg
+            console.log("inputEmail --> " + document.getElementById('inputEmail').value);
+
+            const model = {
+              //  UserNameInput: document.getElementById('inpuUserName').value,
+                PasswordReg: document.getElementById('inputPassReg').value,
+                FirstName: document.getElementById('inpuName').value,
+                LastName: document.getElementById('inpuLastName').value,
+                Email: document.getElementById('inputEmailReg').value,
+                }
+          
+            
+
+
+            console.log("model --> " + JSON.stringify(model));
+           // alert(JSON.stringify(model));
+
+
+            $.ajax({
+                url: '/Home/SubmitRegis',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(model),
+                success: function (res) {
+
+                    console.log("message --> " + res.message);
+                    console.log("success --> " + res.success);
+
+                    if (res.success == true) {
+
+                        console.log("success 1 --> " + res.success);
+                        console.log("message 1 --> " + res.message);
+
+                        document.getElementById('inputPassReg').value = "";
+                        document.getElementById('inpuName').value = "";
+                        document.getElementById('inpuLastName').value = "";
+                        document.getElementById('inputEmailReg').value = "";
+
+
+                        document.getElementById("lblMag").style.color = "limegreen";
+                        document.getElementById("lblMag").innerText = res.message;
+
+                        //const modal = bootstrap.Modal.getInstance(document.getElementById('exampleModal'));
+                        //modal.hide();
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 3000); 
+
+        
+                        //btnDroplist
+                    } else {
+                        document.getElementById("lblMag").innerText = res.message;
+                        
+                    }
+
+
+
+                }
+
+            });
+
+        }
+
+
+        
+        function sendName() {
+
+           //inputEmail  inputPassword
+
+           
+
+            var user = document.getElementById('inputEmail').value;
+            var pass = document.getElementById('inputPassword').value;
+
+
+            console.log("inputEmail --> " + user);
+            console.log("inputPassword --> " + pass);
+
+            const model = {
+                UserNameInput: user,
+                PasswordInput: pass,
+           
+            }
+
+
+
+            $.ajax({
+                url: '/Home/Login',
+                method: 'POST',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(model),
+                dataType: "json",
+                success: function (res) {
+
+                    console.log("success --> " + res.success);
+                    console.log("username --> " + res.username);
+                    console.log("userID --> " + res.userID);
+
+                    if (res.success == true) {
+
+
+
+
+                        document.getElementById("btnDroplist").innerText = res.username;
+
+                        document.getElementById("divInit").style.display = "none";
+                        document.getElementById("navMember").style.display = "block";
+
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('exampleModal'));
+                        modal.hide();
+
+                        localStorage.setItem("UserID", res.userID)
+                        localStorage.setItem("username", res.username);
+
+                        window.location.reload();
+                    } else {
+                        
+                        document.getElementById("lblMsgLogin").innerText = "email  หรือ password ไม่ถูกต้อง!";
+                    }
+
+
+
+                }
+
+            });
+
+        }
+
+        function setScore(id) {
+
+            document.getElementById("divScore").style.display = "block";
+            document.getElementById("divComplete").style.display = "none";
+
+            document.getElementById("btnRating").click();
+            //
+            document.getElementById("hiddenMenuID").innerText = id;
+        }
+
+        function setRating() {
+
+            var rating = document.querySelector('input[name="Score1"]:checked').value;
+                       
+            console.log("rating----> " + rating);
+            console.log("Menu ID----> " + document.getElementById("hiddenMenuID").innerText);
+            console.log("UserID----> " + localStorage.getItem("UserID"));
+
+            const model = {
+           
+                UserOwner: localStorage.getItem("UserID"),
+                Rating: rating,
+                RecipeID: document.getElementById("hiddenMenuID").innerText,
+               
+            }
+
+
+            $.ajax({
+                url: '/Home/Rating',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(model),
+                success: function (res) {
+
+
+
+
+                    document.getElementById("lblMsg").innerText = res.message;
+
+                    document.getElementById("divScore").style.display = "none";
+                    document.getElementById("divComplete").style.display = "block";
+
+
+                }
+
+            });
+        }
+        function fnLogout() {
+            localStorage.clear();
+            window.location.reload();
+        }
+    </script>
+
+</body>
+</html>

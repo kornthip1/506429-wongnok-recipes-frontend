@@ -1,0 +1,346 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+
+
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wongnok - สูตรอาหารไทย</title>
+    <link rel="stylesheet" href="~/css/Style.css" />
+    <link rel="stylesheet" href="~/css/bootstrap/bootstrap.min.css" />
+    <script src="~/js/bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fff8f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #ff6f61;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .hdst {
+            background-color: #ff6f61;
+            color: white;
+            text-align: center;
+        }
+
+        .search-container {
+            background-color: #ffe5d9;
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        input[type="text"], select {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #ffb74d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .recipes {
+            padding: 20px;
+            display: grid;
+       /*     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;*/
+            width:100%;
+        }
+
+        .recipe-card {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+            .recipe-card img {
+                width: 100%;
+                height: 200px;
+                object-fit: cover;
+            }
+
+        .recipe-info {
+            padding: 15px;
+        }
+
+            .recipe-info h3 {
+                margin: 0 0 10px;
+            }
+
+            .recipe-info p {
+                margin: 5px 0;
+            }
+    </style>
+</head>
+<body>
+
+
+
+
+    <div class="row hdst">
+        <div class="col-10">
+            <h1>Wongnok</h1>
+            <p>ค้นหาสูตรอาหารได้ง่าย ๆ ด้วยเมนู, วัตถุดิบ, เวลา หรือระดับความยาก</p>
+        </div>
+
+        <div class="col-2 mt-4" style="display:block" id="navMember">
+
+            <!-- Example single danger button -->
+            <div class="btn-group">
+                <button id="btnDroplist" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="/Home/Main">หน้าแรก</a></li>
+                    <li><a class="dropdown-item" href="/Home/RecipeManage">เพิ่มสูตรอาหาร</a></li>
+                    <li><a class="dropdown-item" href="#">สูตรอาหารของฉัน</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" onclick="fnLogout();">Log out</a></li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+
+
+
+
+    <div class="recipes" id="recipesContainer" >
+        <!-- Recipe cards will be inserted here dynamically -->
+    </div>
+
+
+
+    <button class="" id="btnEditShow" data-bs-toggle="modal" data-bs-target="#exampleModal" style="display:none">  </button>
+
+    <!-- Modal  login-->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+
+
+                    <form action="/Home/SubmitRecipeAsync" method="post" enctype="multipart/form-data">
+
+
+
+                        <input type="text" class="form-control" id="UserID" name="UserID" style="color:white;border:none;display:none">
+                        <input type="text" class="form-control" id="RecipeID" name="RecipeID" style="color:white;border:none;display:none" >
+
+                        <div class="mb-3">
+                            <h1>ข้อมูลสูตรอาหาร</h1>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">ชื่อ:</label>
+                            <input type="text" class="form-control" id="menuname" name="menuname" required>
+
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label"> รูปอาหาร: </label>
+                            <input type="file" class="form-control" id="imagerecipe" name="imagerecipe" accept="image/*" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleFormControlInput1" class="form-label">วัตถุดิบ:</label>
+                            <textarea class="form-control" id="ingredient" name="ingredient" required></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">ขั้นตอน:</label>
+                            <textarea id="steps" class="form-control" name="step" placeholder="อธิบายขั้นตอนการทำ" required></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">ระยะเวลา:</label>
+                            <select class="form-control" id="time" name="time" required>
+                                <option value="">เลือกเวลาที่ใช้ทำอาหาร</option>
+                                <option value="T1">5 - 10 นาที</option>
+                                <option value="T2">11 - 30 นาที</option>
+                                <option value="T3">31 - 60 นาที</option>
+                                <option value="T4">60+ นาที</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">ระดับความยากง่ายของสูตร :</label>
+                            <select class="form-control" id="level" name="level" required>
+                                <option value="">เลือกระดับความยาก</option>
+                                <option value="Easy">Easy</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Hard">Hard</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <button type="submit" class="form-control btn btn-primary">ส่งข้อมูล</button>
+                        </div>
+                    </form>
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @Html.AntiForgeryToken()
+
+    <script>
+
+        console.log("userlogin : " + localStorage.getItem("UserID"))
+        var recipettIni;
+
+        document.getElementById("btnDroplist").innerText = localStorage.getItem("username");
+
+
+        // document.getElementById("UserID").value = localStorage.getItem("UserID");
+
+        window.onload = () => LoadData();
+
+        function LoadData() {
+
+            var userID = localStorage.getItem("UserID")
+            $.ajax({
+                url: '/Home/GetMyRecipe',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(userID),
+                success: function (res) {
+
+                    recipettIni = res;
+
+                    console.log("RAW JSON:", JSON.stringify(res));
+
+                    const container = document.getElementById("recipesContainer");
+                    container.innerHTML = "";
+
+                    if (res.length === 0) {
+                        container.innerHTML = "<p>ไม่พบสูตรอาหารที่ตรงกัน</p>";
+                        return;
+                    }
+
+                    var html = "<table class='table container text-center p-2' style='width: 100%;' >";
+                    html += "<thead>";
+                    html += "<tr>";
+                    html += "<th></th>";
+                    html += "<th>ID</th>";
+
+                    html += "<th>NAME</th>";
+                    html += "<th>เวลาที่ใช้</th>";
+                    html += "<th>ความยาก</th>";
+                    html += "<th></th>";
+                    html += "<th></th>";
+                    html += "</tr>";
+                    html += "</thead>";
+                    res.forEach(recipett => {
+                   
+
+                        html += "<tr>";
+                        html += "<td style='width: 15%;' > <img src ='/uploads/" + recipett.imageRecipePath + "' style='width: 15%; height: 15%' > </td>";
+                        html += "<td style='width: 15%;'>" + recipett.recipeID + "</td>";
+                        html += "<td style='width: 15%;'>" + recipett.menuName + "</td>";
+                        html += "<td style='width: 15%;'>" + recipett.times + "</td>";
+                        html += "<td style='width: 15%;'>" + recipett.levels + "</td>";
+                        html += `<td><button id='btnEdit' onclick='edit("${recipett.recipeID}"  );'  >แก้ไข</button></td>`;
+                        html += `<td><button id='btnDel'  onclick='del("${recipett.recipeID}");'  >ลบ</button></td>`;
+
+                        html += `</tr>`;
+                    });
+
+                    html += `</table>`;
+                    container.innerHTML = html;
+
+                }
+                //success
+
+
+
+            });
+
+        }
+
+
+        function del(recipeID) {
+            console.log("del --: " + recipeID);
+
+            $.ajax({
+                url: '/Home/Del',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(recipeID),
+                success: function (res) {
+
+
+                    window.location.reload();
+                }
+            });
+
+        }
+
+        function edit(recipettID) {
+
+            console.log("recipettID --: " + recipettID);
+            console.log("recipettIni --: " + recipettIni);
+
+
+            recipettIni.forEach(item => {
+
+                if (recipettID == item.recipeID) {
+
+                    document.getElementById("menuname").value = item.menuName;
+                    document.getElementById("ingredient").value = item.ingredient;
+                    document.getElementById("steps").value = item.step;
+                    document.getElementById("RecipeID").value = item.recipeID;
+                   
+                }
+
+            });
+
+            document.getElementById("btnEditShow").click();
+
+       
+        }
+
+
+        function fnLogout() {
+            localStorage.clear();
+            window.location.replace('/Home/Main');
+        }
+
+    </script>
+
+</body>
+</html>
